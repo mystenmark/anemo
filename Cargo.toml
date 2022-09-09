@@ -1,2 +1,8 @@
 [workspace]
 members = ["crates/*"]
+
+[profile.simulator]
+inherits = "test"
+debug = true
+debug-assertions = true
+overflow-checks = true

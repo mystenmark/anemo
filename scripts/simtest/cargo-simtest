@@ -1,0 +1,43 @@
+#!/bin/bash
+# Copyright (c) 2022, Mysten Labs, Inc.
+# SPDX-License-Identifier: Apache-2.0
+
+if [ "$1" != "simtest" ]; then
+  echo "expected to be invoked via \`cargo simtest\`"
+  exit 1
+fi
+
+# consume simtest arg
+shift
+
+# cargo does not export $CARGO_MANIFEST_DIR to subcommands so we have to find it
+# ourselves.
+STARTING_DIR=$(pwd)
+MANIFEST_DIR="$STARTING_DIR"
+while true; do
+  if grep -q '^\[workspace\]$' Cargo.toml 2> /dev/null; then
+    break
+  fi
+  cd ..
+  MANIFEST_DIR=$(pwd)
+done
+
+trap cleanup SIGINT
+
+if [ -z "$MSIM_TEST_SEED" ]; then
+  export MSIM_TEST_SEED=1
+else
+  echo "Using MSIM_TEST_SEED=$MSIM_TEST_SEED from the environment"
+fi
+
+cargo nextest run \
+  --cargo-profile simulator \
+  --config 'build.rustflags = ["--cfg", "msim"]' \
+  --config 'patch.crates-io.tokio.path = "/Users/mlogan/dev/mysten-sim/msim-tokio"' \
+  "$@"
+
+STATUS=$?
+
+cleanup
+
+exit $STATUS

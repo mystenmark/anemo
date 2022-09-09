@@ -4,7 +4,7 @@ use std::convert::Infallible;
 use tower::{util::BoxCloneService, ServiceExt};
 use tracing::trace;
 
-#[tokio::test]
+#[msim_macros::sim_test]
 async fn basic_network() -> Result<()> {
     let _gaurd = crate::init_tracing_for_testing();
 

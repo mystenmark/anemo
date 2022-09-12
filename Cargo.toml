@@ -6,3 +6,4 @@ inherits = "test"
 debug = true
 debug-assertions = true
 overflow-checks = true
+opt-level = 0

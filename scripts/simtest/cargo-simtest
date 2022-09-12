@@ -32,7 +32,7 @@ fi
 
 cargo nextest run \
   --cargo-profile simulator \
-  --config 'build.rustflags = ["--cfg", "msim"]' \
+  --config 'build.rustflags = ["--cfg", "msim", "-Zsanitizer=address"]' \
   --config 'patch.crates-io.tokio.path = "/Users/mlogan/dev/mysten-sim/msim-tokio"' \
   "$@"
 

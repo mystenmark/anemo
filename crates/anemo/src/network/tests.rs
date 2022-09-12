@@ -6,24 +6,36 @@ use tracing::trace;
 
 #[msim_macros::sim_test]
 async fn basic_network() -> Result<()> {
-    let _gaurd = crate::init_tracing_for_testing();
+    //let _gaurd = crate::init_tracing_for_testing();
 
+    dbg!("-");
     let msg = b"The Way of Kings";
 
-    let network_1 = build_network()?;
-    let network_2 = build_network()?;
+    dbg!("-");
+    let network_1 = build_network().unwrap();
+    dbg!("-");
+    let network_2 = build_network().unwrap();
+    dbg!("-");
 
-    let peer = network_1.connect(network_2.local_addr()).await?;
+    let peer = network_1.connect(network_2.local_addr()).await.unwrap();
+    dbg!("-");
     let response = network_1
         .rpc(peer, Request::new(msg.as_ref().into()))
-        .await?;
+        .await
+        .unwrap();
+    dbg!("-");
     assert_eq!(response.into_body(), msg.as_ref());
 
+    dbg!("-");
     let msg = b"Words of Radiance";
+    dbg!("-");
     let peer_id_1 = network_1.peer_id();
+    dbg!("-");
     let response = network_2
         .rpc(peer_id_1, Request::new(msg.as_ref().into()))
-        .await?;
+        .await
+        .unwrap();
+    dbg!("-");
     assert_eq!(response.into_body(), msg.as_ref());
     Ok(())
 }
